@@ -4,12 +4,12 @@ ARG BUILDER_IMAGE=builder_cache
 # Cache image with all the deps
 FROM rust:1.83-bookworm AS builder_cache
 
+RUN rustup install nightly  
+RUN rustup default nightly
 RUN rustup component add rustfmt clippy
 
 WORKDIR /build
 COPY . ./
-
-
 RUN cargo fmt --all -- --check --color=always || (echo "Use cargo fmt to format your code"; exit 1)
 RUN cargo clippy --all --all-features -- -D warnings || (echo "Solve your clippy warnings to succeed"; exit 1)
 
